@@ -115,9 +115,9 @@
             // Rotate if model is loaded
             if (model) {
                 // Calculate target rotation based on mouse position
-                // Adjust multipliers (0.001) to change sensitivity
-                targetRotationY = mouseX * 0.001;
-                targetRotationX = mouseY * 0.001;
+                // Adjust multipliers (0.001 -> 0.0025) to increase sensitivity
+                targetRotationY = mouseX * 0.0025;
+                targetRotationX = mouseY * 0.0025;
 
                 // Smoothly interpolate rotation (Ease-out effect)
                 model.rotation.y += 0.05 * (targetRotationY - model.rotation.y);
