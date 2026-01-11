@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Model Rotation Demo</title>
     <style>
-        body { margin: 0; overflow: hidden; }
-        canvas { display: block; }
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+
         #loading {
             position: absolute;
             top: 50%;
@@ -22,6 +30,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="loading">Loading Model...</div>
     <script type="module">
@@ -40,7 +49,7 @@
         document.body.appendChild(renderer.domElement);
 
         // --- Lighting ---
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); 
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
 
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -56,7 +65,7 @@
         const modelFile = 'Meshy_AI_Iris_Wings_0111080834_generate.glb';
 
         loader.load(
-            modelFile, 
+            modelFile,
             (gltf) => {
                 model = gltf.scene;
 
@@ -85,13 +94,34 @@
             }
         );
 
+        // --- Mouse Interaction ---
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetRotationX = 0;
+        let targetRotationY = 0;
+
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - windowHalfX);
+            mouseY = (event.clientY - windowHalfY);
+        });
+
         // --- Animation Loop ---
         function animate() {
             requestAnimationFrame(animate);
 
             // Rotate if model is loaded
             if (model) {
-                model.rotation.y += 0.01; // Rotation speed
+                // Calculate target rotation based on mouse position
+                // Adjust multipliers (0.001) to change sensitivity
+                targetRotationY = mouseX * 0.001;
+                targetRotationX = mouseY * 0.001;
+
+                // Smoothly interpolate rotation (Ease-out effect)
+                model.rotation.y += 0.05 * (targetRotationY - model.rotation.y);
+                model.rotation.x += 0.05 * (targetRotationX - model.rotation.x);
             }
 
             renderer.render(scene, camera);
@@ -107,4 +137,5 @@
         });
     </script>
 </body>
+
 </html>
